@@ -1,8 +1,19 @@
 from reportlab.pdfgen import canvas
+import pandas as pd
 
 # Converte mm em points (unidade de medida usado na biblioteca reportlab)
 def mmToPoint(mm):
     return mm / 0.352777
+
+# Retorna uma lista de alunos obtida de um arquivo excell
+def getAlunos():
+    alunos = pd.read_excel('./alunos.xlsx')
+    listaAlunos = []
+
+    for index, aluno in alunos.iterrows():
+        listaAlunos.append(aluno['nome'])
+
+    return listaAlunos
 
 '''
     Lê largura e altura do certificado
@@ -17,16 +28,10 @@ def lerDadosPdf():
     largura = int(input("Largura: "))
     altura = int(input("Altura: "))
     print()
-
-    print("Digite as informações do seus alunos:")
     
-    qtdAlunos = int(input("Quantidade de alunos: "))
-    alunos = []
-    for i in range(qtdAlunos):
-        alunos.append(str(input(f"Nome do {i + 1}º aluno: ")))
+    alunos = getAlunos()
     
     print()
-
     diretor = str(input("Nome do diretor: "))
 
     print()
