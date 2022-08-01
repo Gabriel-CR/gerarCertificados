@@ -1,6 +1,7 @@
 from reportlab.pdfgen import canvas
 import pandas as pd
 from PIL import Image
+import sys
 
 # Converte mm em points (unidade de medida usado na biblioteca reportlab)
 def mmToPoint(mm):
@@ -19,8 +20,8 @@ def getAlunosEDiretor(caminhoPlanilha):
     return (listaAlunos, diretor)
 
 # Obtem dimensões da imagem do certificado
-def getTamanhoImagem(caminho):
-    img = Image.open(caminho) 
+def getTamanhoImagem(caminhoImg):
+    img = Image.open(caminhoImg) 
     largura = img.width 
     altura = img.height
     
@@ -30,23 +31,18 @@ def getTamanhoImagem(caminho):
     Obtem caminho da imagem padrão do certificado
     Obtem largura e altura do certificado
     Obtem alunos para preencher o certificado
-    Lê nome do diretor
+    Obtem nome do diretor
     Retorna um dicionário com todos os dados para a emissão dos certificados
 '''
-def lerDadosPdf():
-    print("Digite as seguintes informações do seu certificado:")
-
-    caminhoImg = str(input("Caminho da imagem do certificado: "))
-    caminhoPlanilha = str(input("Caminho da planilha de alunos: "))
-    
-    (largura, altura) = getTamanhoImagem(caminhoImg)
-    (alunos, diretor) = getAlunosEDiretor(caminhoPlanilha)
+def lerDadosPdf(certificado, planilha):
+    (largura, altura) = getTamanhoImagem(certificado)
+    (alunos, diretor) = getAlunosEDiretor(planilha)
 
     dicionario = {
         'size': (largura, altura),
         'alunos': alunos,
         'diretor': diretor,
-        'img': caminhoImg
+        'img': certificado
     }
 
     return dicionario
@@ -72,5 +68,6 @@ def gerarCertificados(alunos, size, caminhoImgCertificado, diretor):
         pdf.save()
 
 if __name__ == "__main__":
-    dados = lerDadosPdf()
+    caminhoImgCertificado, caminhoPlanilha = sys.argv[1], sys.argv[2]
+    dados = lerDadosPdf(caminhoImgCertificado, caminhoPlanilha)
     gerarCertificados(dados['alunos'], dados['size'], dados['img'], dados['diretor'])
