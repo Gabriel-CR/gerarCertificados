@@ -6,7 +6,7 @@ from PIL import Image
 def mmToPoint(mm):
     return mm / 0.352777
 
-# Retorna uma lista de alunos obtida de um arquivo excell
+# Retorna uma tupla com lista de alunos e nome do diretor, obtidos de um arquivo excell
 def getAlunosEDiretor(caminhoPlanilha):
     lines = pd.read_excel(caminhoPlanilha)
     listaAlunos = []
@@ -14,9 +14,9 @@ def getAlunosEDiretor(caminhoPlanilha):
     for index, aluno in lines.iterrows():
         listaAlunos.append(aluno['nome'])
 
-    lines['diretor'] = lines['diretor'].str.replace(' ', '_')
+    diretor = lines.iloc[0]['diretor']
 
-    return listaAlunos
+    return (listaAlunos, diretor)
 
 # Obtem dimensões da imagem do certificado
 def getTamanhoImagem(caminho):
@@ -38,10 +38,9 @@ def lerDadosPdf():
 
     caminhoImg = str(input("Caminho da imagem do certificado: "))
     caminhoPlanilha = str(input("Caminho da planilha de alunos: "))
+    
     (largura, altura) = getTamanhoImagem(caminhoImg)
     (alunos, diretor) = getAlunosEDiretor(caminhoPlanilha)
-
-    # diretor = str(input("Nome do diretor: "))
 
     dicionario = {
         'size': (largura, altura),
